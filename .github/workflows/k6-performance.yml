@@ -1,0 +1,40 @@
+name: K6 Performance Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  k6:
+    name: Run k6 performance test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install prerequisites and k6
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnupg2 software-properties-common wget
+          wget -q -O - https://dl.k6.io/key.gpg | sudo apt-key add -
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install -y k6
+
+      - name: Run k6 test
+        env:
+          TARGET_BASE_URL: ${{ secrets.TARGET_BASE_URL }}
+        run: |
+          mkdir -p results
+          k6 version
+          # Ajusta VUs/duration según tu necesidad; aquí hay un ejemplo reproducible
+          k6 run --vus 10 --duration 30s --out json=results/k6-results.json performance.js
+
+      - name: Upload k6 results
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-results
+          path: results/k6-results.json
