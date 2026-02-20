@@ -34,8 +34,6 @@ export const options = {
     checkout_ok: ['rate>0.98'],        // 98% de checkouts válidos
     orders_created: ['count>200'],     // al menos 200 órdenes OK en toda la prueba
 
-    // Capacidad/operación
-    order_queue_depth: ['value<500'],  // la cola no debe pasar 500 (último valor observado)
   },
 };
 

@@ -42,3 +42,4 @@ __pycache__/
 # Misc
 coverage/
 .cache/
+*.pub
